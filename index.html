@@ -22,8 +22,10 @@
             <div id="status" class="status-dot" title="Connecting..."></div>
         </header>
 
+        <!-- Add Habit at Top -->
         <form id="habit-form">
-            <input type="text" id="habit-input" placeholder="New Habit..." required autocomplete="off">
+            <div class="plus-circle">+</div>
+            <input type="text" id="habit-input" placeholder="e.g. Drink water, Exercise..." required autocomplete="off">
             <button type="submit" id="add-btn">Add</button>
         </form>
 
@@ -31,7 +33,7 @@
             <ul id="habits-list">
                 <!-- Habits will be injected here -->
             </ul>
-            <div id="loading" class="loading-msg">Loading...</div>
+            <div id="loading" class="loading-msg">Loading habits...</div>
         </div>
     </div>
 

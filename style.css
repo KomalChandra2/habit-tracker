@@ -4,21 +4,19 @@
     --ios-red: #FF3B30;
     --ios-gray: #8E8E93;
     --ios-bg: #F2F2F7;
-    --card-bg: rgba(255, 255, 255, 0.85);
-    --card-border: rgba(255, 255, 255, 0.4);
+    --card-bg: #FFFFFF;
     --text-primary: #000000;
     --text-secondary: #8E8E93;
-    --separator: rgba(0, 0, 0, 0.08);
+    --separator: #E5E5EA;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
         --ios-bg: #000000;
-        --card-bg: rgba(28, 28, 30, 0.85);
-        --card-border: rgba(255, 255, 255, 0.1);
+        --card-bg: #1C1C1E;
         --text-primary: #FFFFFF;
         --text-secondary: #8E8E93;
-        --separator: rgba(255, 255, 255, 0.1);
+        --separator: #38383A;
     }
 }
 
@@ -30,15 +28,10 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
     background-color: var(--ios-bg);
-    /* Apple Mesh Gradient for depth */
-    background-image: 
-        radial-gradient(at 0% 0%, rgba(0, 122, 255, 0.08) 0px, transparent 40%),
-        radial-gradient(at 100% 0%, rgba(52, 199, 89, 0.08) 0px, transparent 40%);
-    background-attachment: fixed;
     color: var(--text-primary);
-    line-height: 1.4;
+    line-height: 1.2;
     display: flex;
     justify-content: center;
     -webkit-font-smoothing: antialiased;
@@ -46,18 +39,15 @@ body {
 
 .container {
     width: 100%;
-    max-width: 460px;
-    padding: 20px 16px;
-    animation: fadeIn 0.4s cubic-bezier(0.1, 0.7, 1.0, 0.1);
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    max-width: 500px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 header {
-    margin: 20px 0 24px 4px;
+    margin-bottom: 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -66,6 +56,7 @@ header {
 h1 {
     font-size: 34px;
     font-weight: 700;
+    color: var(--ios-blue);
     letter-spacing: -1px;
 }
 
@@ -74,26 +65,38 @@ h1 {
     height: 10px;
     border-radius: 50%;
     background-color: #C7C7CC;
-    transition: all 0.5s ease;
+    transition: all 0.4s ease;
 }
 
 .status-dot.active {
     background-color: var(--ios-green);
-    box-shadow: 0 0 10px var(--ios-green);
+    box-shadow: 0 0 8px var(--ios-green);
 }
 
-/* iOS Style Input Field */
+/* Add Habit Form at Top (Reminders Style) */
 #habit-form {
     display: flex;
     align-items: center;
     background: var(--card-bg);
-    backdrop-filter: blur(25px) saturate(200%);
-    -webkit-backdrop-filter: blur(25px) saturate(200%);
-    border: 0.5px solid var(--card-border);
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 12px 14px;
     margin-bottom: 24px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    gap: 12px;
+}
+
+.plus-circle {
+    width: 24px;
+    height: 24px;
+    background: var(--ios-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
 }
 
 input {
@@ -102,36 +105,29 @@ input {
     background: transparent;
     outline: none;
     font-size: 17px;
-    padding: 4px 8px;
     color: var(--text-primary);
 }
 
+input::placeholder {
+    color: var(--ios-gray);
+    opacity: 0.8;
+}
+
 button#add-btn {
-    background: var(--ios-blue);
-    color: white;
+    color: var(--ios-blue);
+    background: none;
     border: none;
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-size: 15px;
     font-weight: 600;
+    font-size: 16px;
+    padding: 4px 8px;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
-button#add-btn:active {
-    opacity: 0.7;
-    transform: scale(0.96);
-}
-
-/* iOS Grouped List */
+/* List Container (Reminders Grouped Look) */
 .list-container {
     background: var(--card-bg);
-    backdrop-filter: blur(25px) saturate(200%);
-    -webkit-backdrop-filter: blur(25px) saturate(200%);
-    border: 0.5px solid var(--card-border);
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 }
 
 ul {
@@ -141,18 +137,23 @@ ul {
 .habit-item {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
+    padding: 14px 16px;
     gap: 14px;
     position: relative;
-    transition: background 0.2s;
+    transition: background 0.1s;
 }
 
+.habit-item:active {
+    background-color: rgba(0,0,0,0.03);
+}
+
+/* Indented Separator (Signature Reminders) */
 .habit-item::after {
     content: "";
     position: absolute;
     bottom: 0;
     right: 0;
-    left: 58px; /* Indented separator */
+    left: 56px; /* Indent past the checkbox */
     height: 0.5px;
     background-color: var(--separator);
 }
@@ -161,20 +162,19 @@ ul {
     display: none;
 }
 
-/* Authentic iOS Checkbox Circle */
+/* Circular Reminders Checkbox */
 .habit-checkbox {
     width: 28px;
     height: 28px;
     appearance: none;
-    border: 1.5px solid #C7C7CC; /* iOS Gray */
+    border: 1.5px solid #C7C7CC;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: all 0.15s cubic-bezier(0.1, 0.7, 0.1, 1);
-    background: transparent;
+    transition: all 0.2s cubic-bezier(0.1, 0.7, 1.0, 0.1);
 }
 
 .habit-checkbox:checked {
@@ -188,7 +188,7 @@ ul {
     height: 8px;
     border-left: 2.5px solid white;
     border-bottom: 2.5px solid white;
-    transform: rotate(-45deg) translateY(-1px);
+    transform: rotate(-45deg) translateY(-1.5px);
     display: block;
 }
 
@@ -196,7 +196,6 @@ ul {
     flex: 1;
     font-size: 17px;
     font-weight: 400;
-    color: var(--text-primary);
 }
 
 .completed .habit-text {
@@ -205,7 +204,7 @@ ul {
     opacity: 0.8;
 }
 
-/* iOS Delete Action (Destructive) */
+/* Delete Button (Tap Optimized) */
 .delete-btn {
     color: #C7C7CC;
     background: none;
@@ -222,7 +221,7 @@ ul {
 }
 
 .delete-btn:active {
-    background: rgba(255, 59, 48, 0.15);
+    background: rgba(255, 59, 48, 0.1);
     color: var(--ios-red);
 }
 
@@ -235,9 +234,4 @@ ul {
 
 .hidden {
     display: none;
-}
-
-/* Active Highlight */
-.habit-item:active {
-    background: rgba(0, 0, 0, 0.05);
 }
