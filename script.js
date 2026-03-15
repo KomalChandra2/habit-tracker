@@ -3,7 +3,7 @@ const habitInput = document.getElementById('habit-input');
 const habitsList = document.getElementById('habits-list');
 const emptyMsg = document.getElementById('empty-msg');
 
-// ---- Persistent Storage via IndexedDB (more reliable than LocalStorage on mobile) ----
+// ---- Dual Storage Persistence (IndexedDB + LocalStorage Backup) ----
 
 const DB_NAME = 'HabitTrackerDB';
 const DB_VERSION = 1;
@@ -24,9 +24,12 @@ function openDB() {
 }
 
 async function loadHabits() {
+    let habitsArr = [];
+    
+    // 1. Try loading from IndexedDB
     try {
         const db = await openDB();
-        return new Promise((resolve, reject) => {
+        habitsArr = await new Promise((resolve, reject) => {
             const tx = db.transaction(STORE_NAME, 'readonly');
             const store = tx.objectStore(STORE_NAME);
             const request = store.getAll();
@@ -34,27 +37,43 @@ async function loadHabits() {
             request.onerror = () => reject(request.error);
         });
     } catch (e) {
-        // Fallback to LocalStorage if IndexedDB fails
-        console.warn('IndexedDB failed, using LocalStorage fallback:', e);
-        return JSON.parse(localStorage.getItem('simple_habits')) || [];
+        console.warn('IndexedDB load failed:', e);
     }
+
+    // 2. Fallback/Sync with LocalStorage
+    const localBackup = JSON.parse(localStorage.getItem('habits_backup')) || [];
+    
+    // If IndexedDB is empty but LocalStorage has data, use LocalStorage (Recovery)
+    if (habitsArr.length === 0 && localBackup.length > 0) {
+        habitsArr = localBackup;
+        console.log('Restored from LocalStorage backup');
+    } 
+    // If both have data, merge or prefer the one with more/newer data (simplified: prefer IndexedDB)
+    else if (habitsArr.length > 0) {
+        // Sync LocalStorage to match IndexedDB
+        localStorage.setItem('habits_backup', JSON.stringify(habitsArr));
+    }
+
+    return habitsArr;
 }
 
-async function saveAllHabits(habits) {
+async function saveAllHabits(updatedHabits) {
+    // 1. Save to LocalStorage immediately (synchronous backup)
+    localStorage.setItem('habits_backup', JSON.stringify(updatedHabits));
+
+    // 2. Save to IndexedDB (asynchronous primary)
     try {
         const db = await openDB();
         const tx = db.transaction(STORE_NAME, 'readwrite');
         const store = tx.objectStore(STORE_NAME);
         store.clear();
-        habits.forEach(h => store.put(h));
+        updatedHabits.forEach(h => store.put(h));
         return new Promise((resolve, reject) => {
             tx.oncomplete = resolve;
             tx.onerror = () => reject(tx.error);
         });
     } catch (e) {
-        // Fallback to LocalStorage
-        console.warn('IndexedDB save failed, using LocalStorage fallback:', e);
-        localStorage.setItem('simple_habits', JSON.stringify(habits));
+        console.error('IndexedDB save failed:', e);
     }
 }
 
@@ -126,17 +145,6 @@ habitForm.addEventListener('submit', async (e) => {
 
 async function init() {
     habits = await loadHabits();
-
-    // Migrate from LocalStorage → IndexedDB (one-time)
-    if (habits.length === 0) {
-        const old = JSON.parse(localStorage.getItem('simple_habits')) || [];
-        if (old.length > 0) {
-            habits = old.map((h, i) => ({ id: Date.now() + i, text: h.text, completed: h.completed }));
-            await saveAllHabits(habits);
-            localStorage.removeItem('simple_habits');
-        }
-    }
-
     renderHabits();
 }
 

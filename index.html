@@ -51,7 +51,17 @@
     <script>
         // Only register service worker over HTTP/HTTPS (not file://)
         if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-            navigator.serviceWorker.register('./sw.js');
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                reg.addEventListener('updatefound', () => {
+                    const newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // New version found, reload to apply
+                            window.location.reload();
+                        }
+                    });
+                });
+            });
         }
     </script>
 </body>

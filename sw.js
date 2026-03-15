@@ -1,4 +1,4 @@
-const CACHE_NAME = 'habit-tracker-v3';
+const CACHE_NAME = 'habit-tracker-v4';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -8,17 +8,16 @@ const ASSETS_TO_CACHE = [
     './manifest.json'
 ];
 
-// Install — cache all assets
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(ASSETS_TO_CACHE);
         })
     );
+    // Force the waiting service worker to become active
     self.skipWaiting();
 });
 
-// Activate — clean up old caches
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -29,14 +28,15 @@ self.addEventListener('activate', (event) => {
             );
         })
     );
+    // Ensure the new SW takes control of all clients immediately
     self.clients.claim();
 });
 
-// Fetch — serve from cache, fall back to network
 self.addEventListener('fetch', (event) => {
+    // Network first, falling back to cache (better for development/frequent updates)
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
-            return cachedResponse || fetch(event.request);
+        fetch(event.request).catch(() => {
+            return caches.match(event.request);
         })
     );
 });
