@@ -156,6 +156,20 @@ habitForm.onsubmit = (e) => {
     if (text) {
         addHabit(text);
         habitInput.value = '';
+        habitInput.classList.add('hidden');
+        document.querySelector('#add-btn .btn-text').textContent = "New Habit";
+    }
+};
+
+// Add button interaction: Show input on click
+document.getElementById('add-btn').onclick = (e) => {
+    e.preventDefault();
+    if (habitInput.classList.contains('hidden')) {
+        habitInput.classList.remove('hidden');
+        habitInput.focus();
+        document.querySelector('#add-btn .btn-text').textContent = "Add";
+    } else {
+        habitForm.dispatchEvent(new Event('submit'));
     }
 };
 

@@ -19,23 +19,24 @@
 <body>
     <div class="container">
         <header>
-            <h1>Habit Tracker</h1>
+            <h1 id="list-title">Habits</h1>
             <div id="status" class="status-dot" title="Connecting..."></div>
         </header>
 
-        <div class="section-label">Add New</div>
-        <form id="habit-form">
-            <input type="text" id="habit-input" placeholder="Drink water, exercise..." required autocomplete="off">
-            <button type="submit" id="add-btn">+</button>
-        </form>
-
-        <div class="section-label">Habits</div>
         <div class="list-container">
             <ul id="habits-list">
                 <!-- Habits will be injected here -->
             </ul>
-            <div id="loading" class="loading-msg">Loading habits...</div>
+            <div id="loading" class="loading-msg">Loading...</div>
         </div>
+
+        <form id="habit-form">
+            <button type="submit" id="add-btn">
+                <span class="plus-icon">+</span>
+                <span class="btn-text">New Habit</span>
+            </button>
+            <input type="text" id="habit-input" placeholder="" autocomplete="off" class="hidden">
+        </form>
     </div>
 
     <!-- We use app.js to avoid old script.js cache issues -->
