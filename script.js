@@ -3,12 +3,64 @@ const habitInput = document.getElementById('habit-input');
 const habitsList = document.getElementById('habits-list');
 const emptyMsg = document.getElementById('empty-msg');
 
-// Load habits from LocalStorage
-let habits = JSON.parse(localStorage.getItem('simple_habits')) || [];
+// ---- Persistent Storage via IndexedDB (more reliable than LocalStorage on mobile) ----
 
-function saveHabits() {
-    localStorage.setItem('simple_habits', JSON.stringify(habits));
+const DB_NAME = 'HabitTrackerDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'habits';
+
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+            }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
 }
+
+async function loadHabits() {
+    try {
+        const db = await openDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.getAll();
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    } catch (e) {
+        // Fallback to LocalStorage if IndexedDB fails
+        console.warn('IndexedDB failed, using LocalStorage fallback:', e);
+        return JSON.parse(localStorage.getItem('simple_habits')) || [];
+    }
+}
+
+async function saveAllHabits(habits) {
+    try {
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        store.clear();
+        habits.forEach(h => store.put(h));
+        return new Promise((resolve, reject) => {
+            tx.oncomplete = resolve;
+            tx.onerror = () => reject(tx.error);
+        });
+    } catch (e) {
+        // Fallback to LocalStorage
+        console.warn('IndexedDB save failed, using LocalStorage fallback:', e);
+        localStorage.setItem('simple_habits', JSON.stringify(habits));
+    }
+}
+
+// ---- App State ----
+
+let habits = [];
 
 function updateEmptyState() {
     emptyMsg.classList.toggle('visible', habits.length === 0);
@@ -26,9 +78,9 @@ function renderHabits() {
         checkbox.type = 'checkbox';
         checkbox.className = 'habit-checkbox';
         checkbox.checked = habit.completed;
-        checkbox.addEventListener('change', () => {
+        checkbox.addEventListener('change', async () => {
             habits[index].completed = checkbox.checked;
-            saveHabits();
+            await saveAllHabits(habits);
             renderHabits();
         });
 
@@ -42,9 +94,9 @@ function renderHabits() {
         deleteBtn.className = 'delete-btn';
         deleteBtn.textContent = '✕';
         deleteBtn.title = 'Delete habit';
-        deleteBtn.addEventListener('click', () => {
+        deleteBtn.addEventListener('click', async () => {
             habits.splice(index, 1);
-            saveHabits();
+            await saveAllHabits(habits);
             renderHabits();
         });
 
@@ -58,17 +110,34 @@ function renderHabits() {
 }
 
 // Handle form submit
-habitForm.addEventListener('submit', (e) => {
+habitForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const text = habitInput.value.trim();
     if (!text) return;
 
-    habits.push({ text, completed: false });
+    habits.push({ id: Date.now(), text, completed: false });
     habitInput.value = '';
-    saveHabits();
+    await saveAllHabits(habits);
     renderHabits();
 });
 
-// Initial render
-renderHabits();
+// ---- Initialize ----
+
+async function init() {
+    habits = await loadHabits();
+
+    // Migrate from LocalStorage → IndexedDB (one-time)
+    if (habits.length === 0) {
+        const old = JSON.parse(localStorage.getItem('simple_habits')) || [];
+        if (old.length > 0) {
+            habits = old.map((h, i) => ({ id: Date.now() + i, text: h.text, completed: h.completed }));
+            await saveAllHabits(habits);
+            localStorage.removeItem('simple_habits');
+        }
+    }
+
+    renderHabits();
+}
+
+init();
