@@ -4,7 +4,7 @@
     --ios-red: #FF3B30;
     --ios-gray: #8E8E93;
     --ios-bg: #F2F2F7;
-    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-bg: rgba(255, 255, 255, 0.85);
     --card-border: rgba(255, 255, 255, 0.4);
     --text-primary: #000000;
     --text-secondary: #8E8E93;
@@ -14,7 +14,7 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --ios-bg: #000000;
-        --card-bg: rgba(28, 28, 30, 0.8);
+        --card-bg: rgba(28, 28, 30, 0.85);
         --card-border: rgba(255, 255, 255, 0.1);
         --text-primary: #FFFFFF;
         --text-secondary: #8E8E93;
@@ -26,19 +26,19 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    -webkit-tap-highlight-color: transparent; /* Clean tap feedback */
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
     background-color: var(--ios-bg);
-    /* Soft mesh gradient for premium feel */
+    /* Apple Mesh Gradient for depth */
     background-image: 
-        radial-gradient(at 0% 0%, rgba(0, 122, 255, 0.1) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(52, 199, 89, 0.1) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(0, 122, 255, 0.08) 0px, transparent 40%),
+        radial-gradient(at 100% 0%, rgba(52, 199, 89, 0.08) 0px, transparent 40%);
     background-attachment: fixed;
     color: var(--text-primary);
-    line-height: 1.2;
+    line-height: 1.4;
     display: flex;
     justify-content: center;
     -webkit-font-smoothing: antialiased;
@@ -46,13 +46,13 @@ body {
 
 .container {
     width: 100%;
-    max-width: 440px;
+    max-width: 460px;
     padding: 20px 16px;
-    animation: fadeIn 0.4s ease-out;
+    animation: fadeIn 0.4s cubic-bezier(0.1, 0.7, 1.0, 0.1);
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
@@ -66,7 +66,7 @@ header {
 h1 {
     font-size: 34px;
     font-weight: 700;
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
 }
 
 .status-dot {
@@ -74,26 +74,26 @@ h1 {
     height: 10px;
     border-radius: 50%;
     background-color: #C7C7CC;
-    transition: all 0.4s ease;
+    transition: all 0.5s ease;
 }
 
 .status-dot.active {
     background-color: var(--ios-green);
-    box-shadow: 0 0 8px var(--ios-green);
+    box-shadow: 0 0 10px var(--ios-green);
 }
 
-/* Glassmorphism Form at Top */
+/* iOS Style Input Field */
 #habit-form {
     display: flex;
     align-items: center;
     background: var(--card-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--card-border);
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border: 0.5px solid var(--card-border);
     border-radius: 14px;
-    padding: 10px 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    padding: 12px 14px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 }
 
 input {
@@ -102,7 +102,7 @@ input {
     background: transparent;
     outline: none;
     font-size: 17px;
-    padding: 8px;
+    padding: 4px 8px;
     color: var(--text-primary);
 }
 
@@ -110,28 +110,28 @@ button#add-btn {
     background: var(--ios-blue);
     color: white;
     border: none;
-    padding: 8px 18px;
+    padding: 8px 16px;
     border-radius: 10px;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s;
 }
 
 button#add-btn:active {
-    transform: scale(0.95);
-    opacity: 0.8;
+    opacity: 0.7;
+    transform: scale(0.96);
 }
 
-/* Inset List Card */
+/* iOS Grouped List */
 .list-container {
     background: var(--card-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--card-border);
-    border-radius: 14px;
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border: 0.5px solid var(--card-border);
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 }
 
 ul {
@@ -141,10 +141,10 @@ ul {
 .habit-item {
     display: flex;
     align-items: center;
-    padding: 14px 16px; /* Larger padding for tap targets */
+    padding: 12px 16px;
     gap: 14px;
     position: relative;
-    transition: background 0.1s;
+    transition: background 0.2s;
 }
 
 .habit-item::after {
@@ -152,7 +152,7 @@ ul {
     position: absolute;
     bottom: 0;
     right: 0;
-    left: 56px;
+    left: 58px; /* Indented separator */
     height: 0.5px;
     background-color: var(--separator);
 }
@@ -161,46 +161,51 @@ ul {
     display: none;
 }
 
-/* Mobile-Friendly Checkbox (Large tap area) */
+/* Authentic iOS Checkbox Circle */
 .habit-checkbox {
     width: 28px;
     height: 28px;
     appearance: none;
-    border: 1.5px solid #C7C7CC;
+    border: 1.5px solid #C7C7CC; /* iOS Gray */
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.15s cubic-bezier(0.1, 0.7, 0.1, 1);
+    background: transparent;
 }
 
 .habit-checkbox:checked {
-    background-color: var(--ios-green);
-    border-color: var(--ios-green);
+    background-color: var(--ios-blue);
+    border-color: var(--ios-blue);
 }
 
 .habit-checkbox:checked::after {
-    content: "✓";
-    color: white;
-    font-size: 16px;
-    font-weight: 800;
+    content: "";
+    width: 14px;
+    height: 8px;
+    border-left: 2.5px solid white;
+    border-bottom: 2.5px solid white;
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
 }
 
 .habit-text {
     flex: 1;
     font-size: 17px;
     font-weight: 400;
+    color: var(--text-primary);
 }
 
 .completed .habit-text {
     color: var(--ios-gray);
     text-decoration: line-through;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
-/* Delete Button (Tap Optimized) */
+/* iOS Delete Action (Destructive) */
 .delete-btn {
     color: #C7C7CC;
     background: none;
@@ -217,7 +222,7 @@ ul {
 }
 
 .delete-btn:active {
-    background-color: rgba(255, 59, 48, 0.1);
+    background: rgba(255, 59, 48, 0.15);
     color: var(--ios-red);
 }
 
@@ -232,7 +237,7 @@ ul {
     display: none;
 }
 
-/* Active state for the whole item (touch focus) */
+/* Active Highlight */
 .habit-item:active {
-    background: rgba(0,0,0,0.03);
+    background: rgba(0, 0, 0, 0.05);
 }
