@@ -31,7 +31,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
     background-color: var(--ios-bg);
     color: var(--text-primary);
-    line-height: 1.2;
+    line-height: 1.3;
     display: flex;
     justify-content: center;
     -webkit-font-smoothing: antialiased;
@@ -39,15 +39,12 @@ body {
 
 .container {
     width: 100%;
-    max-width: 600px;
-    padding: 20px 16px;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    max-width: 500px;
+    padding: 40px 16px 60px;
 }
 
 header {
-    margin: 40px 0 20px 4px;
+    margin-bottom: 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -56,7 +53,6 @@ header {
 h1 {
     font-size: 34px;
     font-weight: 700;
-    color: var(--ios-blue); /* Reminders titles are often blue */
     letter-spacing: -0.5px;
 }
 
@@ -73,10 +69,83 @@ h1 {
     box-shadow: 0 0 8px var(--ios-green);
 }
 
+.section-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-left: 12px;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+    font-weight: 500;
+}
+
+/* Add Section at Top */
+.add-section {
+    margin-bottom: 34px;
+}
+
+#habit-form {
+    display: flex;
+    align-items: center;
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 10px 14px;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.input-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+input#habit-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 17px;
+    color: var(--text-primary);
+    width: 100%;
+}
+
+input#habit-date {
+    border: none;
+    background: transparent;
+    color: var(--ios-blue);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+}
+
+button#add-btn {
+    background: var(--ios-blue);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 22px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s;
+}
+
+button#add-btn:active {
+    transform: scale(0.9);
+}
+
+/* List Section */
 .list-container {
     background: var(--card-bg);
-    border-radius: 12px;
-    margin-bottom: 20px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 ul {
@@ -86,8 +155,8 @@ ul {
 .habit-item {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
-    gap: 12px;
+    padding: 14px 16px;
+    gap: 16px;
     position: relative;
 }
 
@@ -97,8 +166,8 @@ ul {
     position: absolute;
     bottom: 0;
     right: 0;
-    left: 56px; /* Indent past the checkbox */
-    height: 1px;
+    left: 60px;
+    height: 0.5px;
     background-color: var(--separator);
 }
 
@@ -106,7 +175,7 @@ ul {
     display: none;
 }
 
-/* Reminders Checkbox */
+/* Touch-optimized Checkbox */
 .habit-checkbox {
     width: 28px;
     height: 28px;
@@ -118,7 +187,7 @@ ul {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .habit-checkbox:checked {
@@ -133,11 +202,26 @@ ul {
     font-weight: 800;
 }
 
-.habit-text {
+.habit-checkbox:active {
+    transform: scale(0.92);
+}
+
+.item-content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.habit-text {
     font-size: 17px;
     font-weight: 400;
-    padding: 4px 0;
+    transition: all 0.2s;
+}
+
+.habit-date-display {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 1px;
 }
 
 .completed .habit-text {
@@ -145,76 +229,32 @@ ul {
     text-decoration: line-through;
 }
 
+/* Delete Button - Better tap target */
 .delete-btn {
     color: #C7C7CC;
     background: none;
     border: none;
-    font-size: 18px;
-    width: 32px;
-    height: 32px;
+    font-size: 20px;
+    width: 44px; /* Native tap target size */
+    height: 44px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s;
+    transition: color 0.2s;
 }
 
-.habit-item:hover .delete-btn {
-    opacity: 1;
-}
-
-/* Add Button at Bottom Left */
-#habit-form {
-    margin-top: auto;
-    padding: 20px 4px;
-    display: flex;
-    flex-direction: column;
-}
-
-button#add-btn {
-    background: none;
-    border: none;
-    color: var(--ios-blue);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 8px 0;
-}
-
-.plus-icon {
-    width: 24px;
-    height: 24px;
-    background: var(--ios-blue);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-input#habit-input {
-    border: none;
-    background: transparent;
-    outline: none;
-    font-size: 17px;
-    padding: 8px 12px;
-    margin-left: 32px;
-    color: var(--text-primary);
-    border-bottom: 0.5px solid var(--separator);
-}
-
-.hidden {
-    display: none;
+.delete-btn:active {
+    color: var(--ios-red);
+    transform: scale(0.9);
 }
 
 .loading-msg {
     text-align: center;
-    padding: 30px;
+    padding: 40px;
     color: var(--ios-gray);
+}
+
+.hidden {
+    display: none;
 }
