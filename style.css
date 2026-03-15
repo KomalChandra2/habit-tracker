@@ -158,7 +158,7 @@ ul {
 }
 
 /* Premium Checkbox */
-/* Fixed 24px Circular Checkbox */
+/* Square Apple-Style Checkbox */
 .habit-checkbox {
     width: 24px;
     height: 24px;
@@ -167,7 +167,7 @@ ul {
     appearance: none;
     -webkit-appearance: none;
     border: 2px solid var(--text-secondary);
-    border-radius: 50%;
+    border-radius: 6px; /* Rounded square from Apple HIG */
     cursor: pointer;
     display: flex;
     align-items: center;
