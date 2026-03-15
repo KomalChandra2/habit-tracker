@@ -6,8 +6,8 @@ const statusDot = document.getElementById('status');
 const loadingMsg = document.getElementById('loading');
 
 // Config from User
-const URL = 'https://kejkzxftvtivnhomtmsg.supabase.co';
-const KEY = 'sb_publishable_dDeETO6-dy05fSIcyJrZvQ_4llfu_Uf';
+const SUPABASE_URL = 'https://kejkzxftvtivnhomtmsg.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_dDeETO6-dy05fSIcyJrZvQ_4llfu_Uf';
 
 let supabaseClient = null;
 let habits = [];
@@ -18,7 +18,7 @@ let habits = [];
 function init() {
     try {
         if (window.supabase) {
-            supabaseClient = window.supabase.createClient(URL, KEY);
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             statusDot.classList.add('active');
             console.log("Supabase Ready");
             fetchHabits();
