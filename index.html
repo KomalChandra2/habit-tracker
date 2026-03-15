@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Habits</title>
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#F2F2F7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Habits">
+    <link rel="apple-touch-icon" href="icon-512.png">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header class="nav-bar">
+            <h1>Habits</h1>
+        </header>
+
+        <main class="content">
+            <!-- Add Habit Section -->
+            <section class="section">
+                <div class="section-header">NEW HABIT</div>
+                <form id="habit-form" class="input-row">
+                    <input type="text" id="habit-input" placeholder="e.g. Drink 8 glasses of water" required autocomplete="off">
+                    <button type="submit" id="add-btn">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Habits List Section -->
+            <section class="section">
+                <div class="section-header">TODAY</div>
+                <ul id="habits-list" class="grouped-list">
+                    <!-- Habit items rendered by JS -->
+                </ul>
+                <p id="empty-msg" class="empty-msg">No habits yet.<br>Add one above to get started.</p>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Only register service worker over HTTP/HTTPS (not file://)
+        if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+            navigator.serviceWorker.register('./sw.js');
+        }
+    </script>
+</body>
+</html>
