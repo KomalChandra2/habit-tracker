@@ -9,7 +9,7 @@ const loadingMsg = document.getElementById('loading');
 const URL = 'https://kejkzxftvtivnhomtmsg.supabase.co';
 const KEY = 'sb_publishable_dDeETO6-dy05fSIcyJrZvQ_4llfu_Uf';
 
-let supabase = null;
+let supabaseClient = null;
 let habits = [];
 
 /**
@@ -18,7 +18,7 @@ let habits = [];
 function init() {
     try {
         if (window.supabase) {
-            supabase = window.supabase.createClient(URL, KEY);
+            supabaseClient = window.supabase.createClient(URL, KEY);
             statusDot.classList.add('active');
             console.log("Supabase Ready");
             fetchHabits();
@@ -35,7 +35,7 @@ function init() {
  * 2. FETCH HABITS
  */
 async function fetchHabits() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('habits')
         .select('*')
         .order('created_at', { ascending: true });
@@ -58,7 +58,7 @@ async function addHabit(text) {
     habits.push(tempHabit);
     render();
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('habits')
         .insert([{ text, completed: false }])
         .select();
@@ -85,7 +85,7 @@ async function toggleHabit(id, completed) {
     if (habit) habit.completed = completed;
     render();
 
-    const { error } = await supabase
+    const { error } = await supabaseClient
         .from('habits')
         .update({ completed })
         .eq('id', id);
@@ -104,7 +104,7 @@ async function deleteHabit(id) {
     habits = habits.filter(h => h.id !== id);
     render();
 
-    const { error } = await supabase
+    const { error } = await supabaseClient
         .from('habits')
         .delete()
         .eq('id', id);
