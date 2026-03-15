@@ -147,125 +147,15 @@ function render() {
     });
 }
 
-const habitDate = document.getElementById('habit-date');
-
-// Set default date to today
-if (habitDate) {
-    habitDate.valueAsDate = new Date();
-}
-
-/**
- * 2. FETCH HABITS
- */
-async function fetchHabits() {
-    const { data, error } = await supabaseClient
-        .from('habits')
-        .select('*')
-        .order('created_at', { ascending: false }); // Show newest at top
-
-    if (error) {
-        console.error("Fetch Error:", error);
-        return;
-    }
-
-    habits = data || [];
-    render();
-}
-
-/**
- * 3. ADD HABIT
- */
-async function addHabit(text, date) {
-    // Optimistic UI update
-    const tempHabit = { 
-        id: Date.now(), 
-        text, 
-        completed: false, 
-        target_date: date,
-        isTemp: true 
-    };
-    habits.unshift(tempHabit); // Add to top
-    render();
-
-    const { data, error } = await supabaseClient
-        .from('habits')
-        .insert([{ text, completed: false, target_date: date }])
-        .select();
-
-    if (error) {
-        console.error("Add Error:", error);
-        habits = habits.filter(h => h.id !== tempHabit.id); // Revert
-        render();
-        return;
-    }
-
-    // Replace temp with real
-    const idx = habits.findIndex(h => h.id === tempHabit.id);
-    if (idx !== -1) habits[idx] = data[0];
-    render();
-}
-
-/**
- * 6. RENDER UI
- */
-function render() {
-    loadingMsg.classList.add('hidden');
-    habitsList.innerHTML = '';
-
-    habits.forEach(habit => {
-        const li = document.createElement('li');
-        li.className = `habit-item ${habit.completed ? 'completed' : ''}`;
-
-        const chk = document.createElement('input');
-        chk.type = 'checkbox';
-        chk.className = 'habit-checkbox';
-        chk.checked = habit.completed;
-        chk.onchange = () => toggleHabit(habit.id, chk.checked);
-
-        const content = document.createElement('div');
-        content.className = 'item-content';
-
-        const span = document.createElement('span');
-        span.className = 'habit-text';
-        span.textContent = habit.text;
-
-        content.appendChild(span);
-
-        if (habit.target_date) {
-            const dateSpan = document.createElement('span');
-            dateSpan.className = 'habit-date-display';
-            
-            // Format date nicely (Mar 15)
-            const d = new Date(habit.target_date);
-            const formatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
-            dateSpan.textContent = formatted;
-            content.appendChild(dateSpan);
-        }
-
-        const del = document.createElement('button');
-        del.className = 'delete-btn';
-        del.innerHTML = '✕';
-        del.onclick = () => deleteHabit(habit.id);
-
-        li.appendChild(chk);
-        li.appendChild(content);
-        li.appendChild(del);
-        habitsList.appendChild(li);
-    });
-}
-
 /**
  * 7. EVENT LISTENERS
  */
 habitForm.onsubmit = (e) => {
     e.preventDefault();
     const text = habitInput.value.trim();
-    const date = habitDate.value;
     if (text) {
-        addHabit(text, date);
+        addHabit(text);
         habitInput.value = '';
-        // Keep the date but maybe focus back to text
-        habitInput.focus();
     }
 };
 
