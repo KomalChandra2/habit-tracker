@@ -65,11 +65,34 @@ body {
     -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .nav-bar h1 {
-    font-size: 2rem;
+    font-size: 2.1rem;
     font-weight: 700;
     letter-spacing: -0.025em;
     color: var(--text-primary);
+}
+
+.sync-status {
+    color: var(--text-secondary);
+    opacity: 0.5;
+    transition: opacity 0.3s, color 0.3s;
+}
+
+.sync-status.active {
+    color: var(--accent);
+    opacity: 1;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 /* ---- Content ---- */
