@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Habits</title>
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#F2F2F7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Habits">
+    <link rel="apple-touch-icon" href="icon-512.png">
+
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header class="nav-bar">
+            <div class="header-content">
+                <h1>Habits</h1>
+                <div id="sync-status" class="sync-status" title="Cloud Sync Active">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path>
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <main class="content">
+            <!-- Add Habit Section -->
+            <section class="section">
+                <div class="section-header">NEW HABIT</div>
+                <form id="habit-form" class="input-row">
+                    <input type="text" id="habit-input" placeholder="e.g. Drink 8 glasses of water" required autocomplete="off">
+                    <button type="submit" id="add-btn">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Habits List Section -->
+            <section class="section">
+                <div class="section-header">TODAY</div>
+                <ul id="habits-list" class="grouped-list">
+                    <!-- Habit items rendered by JS -->
+                </ul>
+                <p id="empty-msg" class="empty-msg">No habits yet.<br>Add one above to get started.</p>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Only register service worker over HTTP/HTTPS (not file://)
+        if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                reg.addEventListener('updatefound', () => {
+                    const newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // New version found, reload to apply
+                            window.location.reload();
+                        }
+                    });
+                });
+            });
+        }
+    </script>
+</body>
+</html>
