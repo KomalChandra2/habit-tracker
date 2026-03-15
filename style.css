@@ -158,10 +158,14 @@ ul {
 }
 
 /* Premium Checkbox */
+/* Fixed 24px Circular Checkbox */
 .habit-checkbox {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
     appearance: none;
+    -webkit-appearance: none;
     border: 2px solid var(--text-secondary);
     border-radius: 50%;
     cursor: pointer;
@@ -169,22 +173,24 @@ ul {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     background: transparent;
+    padding: 0;
+    margin: 0;
 }
 
 .habit-checkbox:checked {
     background-color: var(--accent-blue);
     border-color: var(--accent-blue);
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .habit-checkbox:checked::after {
     content: "";
-    width: 10px;
+    width: 9px;
     height: 5px;
-    border-left: 2.5px solid white;
-    border-bottom: 2.5px solid white;
+    border-left: 2px solid white;
+    border-bottom: 2px solid white;
     transform: rotate(-45deg) translateY(-1px);
     display: block;
 }
