@@ -4,6 +4,7 @@ const habitInput = document.getElementById('habit-input');
 const habitsList = document.getElementById('habits-list');
 const statusDot = document.getElementById('status');
 const loadingMsg = document.getElementById('loading');
+const countLabel = document.getElementById('habit-count');
 
 // Config from User
 const SUPABASE_URL = 'https://kejkzxftvtivnhomtmsg.supabase.co';
@@ -47,6 +48,15 @@ async function fetchHabits() {
 
     habits = data || [];
     render();
+}
+
+/**
+ * 3. UPDATE COUNT
+ */
+function updateCount() {
+    if (!countLabel) return;
+    const remaining = habits.filter(h => !h.completed).length;
+    countLabel.textContent = `${remaining} remaining`;
 }
 
 /**
@@ -145,6 +155,7 @@ function render() {
         li.appendChild(del);
         habitsList.appendChild(li);
     });
+    updateCount();
 }
 
 /**

@@ -18,20 +18,22 @@
 </head>
     <div class="container">
         <header>
-            <h1 id="list-title">Habits</h1>
+            <div class="header-left">
+                <h1 id="list-title">Habits</h1>
+                <div id="habit-count" class="habit-count">...</div>
+            </div>
             <div id="status" class="status-dot" title="Connecting..."></div>
         </header>
 
-        <!-- Add Habit at Top -->
+        <!-- Premium Add Habit Field -->
         <form id="habit-form">
-            <div class="plus-circle">+</div>
-            <input type="text" id="habit-input" placeholder="e.g. Drink water, Exercise..." required autocomplete="off">
+            <input type="text" id="habit-input" placeholder="Add a new habit..." required autocomplete="off">
             <button type="submit" id="add-btn">Add</button>
         </form>
 
         <div class="list-container">
             <ul id="habits-list">
-                <!-- Habits will be injected here -->
+                <!-- Habits injected here as individual cards -->
             </ul>
             <div id="loading" class="loading-msg">Loading habits...</div>
         </div>
