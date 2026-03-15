@@ -30,6 +30,9 @@ async function loadHabits() {
     
     if (error) {
         console.error('Error fetching habits:', error);
+        if (error.message.includes("relation \"habits\" does not exist")) {
+            alert("⚠️ Database Table Not Found!\n\nPlease make sure you ran the SQL setup script in your Supabase dashboard (Step 2 in my instructions).");
+        }
         return [];
     }
     return data;
@@ -46,6 +49,7 @@ async function addHabit(text) {
     
     if (error) {
         console.error('Error adding habit:', error);
+        alert("❌ Failed to add habit: " + error.message);
         return null;
     }
     return data[0];
@@ -60,7 +64,10 @@ async function toggleHabit(id, completed) {
     
     setSyncing(false);
     
-    if (error) console.error('Error updating habit:', error);
+    if (error) {
+        console.error('Error updating habit:', error);
+        alert("❌ Failed to update habit: " + error.message);
+    }
 }
 
 async function deleteHabit(id) {
@@ -72,7 +79,10 @@ async function deleteHabit(id) {
     
     setSyncing(false);
     
-    if (error) console.error('Error deleting habit:', error);
+    if (error) {
+        console.error('Error deleting habit:', error);
+        alert("❌ Failed to delete habit: " + error.message);
+    }
 }
 
 // ---- UI Rendering ----
@@ -94,9 +104,16 @@ function renderHabits() {
         checkbox.className = 'habit-checkbox';
         checkbox.checked = habit.completed;
         checkbox.addEventListener('change', async () => {
+            const originalState = !checkbox.checked;
             habit.completed = checkbox.checked;
-            await toggleHabit(habit.id, habit.completed);
-            renderHabits();
+            renderHabits(); // Immediate UI feedback
+            
+            try {
+                await toggleHabit(habit.id, habit.completed);
+            } catch (e) {
+                habit.completed = originalState; // Revert on failure
+                renderHabits();
+            }
         });
 
         // Text
@@ -110,10 +127,16 @@ function renderHabits() {
         deleteBtn.textContent = '✕';
         deleteBtn.title = 'Delete habit';
         deleteBtn.addEventListener('click', async () => {
-            await deleteHabit(habit.id);
-            // Local update will happen via subscription or re-fetch
+            const originalHabits = [...habits];
             habits = habits.filter(h => h.id !== habit.id);
             renderHabits();
+            
+            try {
+                await deleteHabit(habit.id);
+            } catch (e) {
+                habits = originalHabits; // Revert on failure
+                renderHabits();
+            }
         });
 
         li.appendChild(checkbox);
@@ -132,11 +155,15 @@ habitForm.addEventListener('submit', async (e) => {
     const text = habitInput.value.trim();
     if (!text) return;
 
+    const originalText = habitInput.value;
     habitInput.value = '';
+    
     const newHabit = await addHabit(text);
     if (newHabit) {
         habits.push(newHabit);
         renderHabits();
+    } else {
+        habitInput.value = originalText; // Restore text if failed
     }
 });
 
@@ -146,7 +173,6 @@ function subscribeToChanges() {
     supabase
         .channel('habits-realtime')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'habits' }, async (payload) => {
-            // Re-fetch all to keep it simple and consistent across devices
             habits = await loadHabits();
             renderHabits();
         })
