@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Habit Tracker</title>
+    
+    <!-- PWA Basics -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Habit Tracker</h1>
+            <div id="status" class="status-dot" title="Connecting..."></div>
+        </header>
+
+        <form id="habit-form">
+            <input type="text" id="habit-input" placeholder="New habit name..." required autocomplete="off">
+            <button type="submit" id="add-btn">Add</button>
+        </form>
+
+        <div class="list-container">
+            <ul id="habits-list">
+                <!-- Habits will be injected here -->
+            </ul>
+            <div id="loading" class="loading-msg">Loading habits...</div>
+        </div>
+    </div>
+
+    <!-- We use app.js to avoid old script.js cache issues -->
+    <script src="app.js"></script>
+    
+    <script>
+        // Force service worker update to clear old cache
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                reg.onupdatefound = () => {
+                    const installingWorker = reg.installing;
+                    installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.location.reload();
+                        }
+                    };
+                };
+            });
+        }
+    </script>
+</body>
+</html>
