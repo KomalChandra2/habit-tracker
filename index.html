@@ -18,16 +18,14 @@
 </head>
     <div class="container">
         <header>
-            <div class="header-left">
-                <h1 id="list-title">Habits</h1>
-                <p id="habits-count" class="subtitle">Loading...</p>
-            </div>
+            <h1 id="list-title">Habits</h1>
             <div id="status" class="status-dot" title="Connecting..."></div>
         </header>
 
-        <!-- Premium Input Bar -->
+        <!-- Add Habit at Top -->
         <form id="habit-form">
-            <input type="text" id="habit-input" placeholder="Add a new habit..." required autocomplete="off">
+            <div class="plus-circle">+</div>
+            <input type="text" id="habit-input" placeholder="e.g. Drink water, Exercise..." required autocomplete="off">
             <button type="submit" id="add-btn">Add</button>
         </form>
 

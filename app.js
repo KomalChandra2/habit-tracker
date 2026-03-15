@@ -46,7 +46,7 @@ async function fetchHabits() {
     }
 
     habits = data || [];
-    renderHabits();
+    render();
 }
 
 /**
@@ -56,7 +56,7 @@ async function addHabit(text) {
     // Optimistic UI update
     const tempHabit = { id: Date.now(), text, completed: false, isTemp: true };
     habits.push(tempHabit);
-    renderHabits();
+    render();
 
     const { data, error } = await supabaseClient
         .from('habits')
@@ -66,14 +66,14 @@ async function addHabit(text) {
     if (error) {
         console.error("Add Error:", error);
         habits = habits.filter(h => h.id !== tempHabit.id); // Revert
-        renderHabits();
+        render();
         return;
     }
 
     // Replace temp with real
     const idx = habits.findIndex(h => h.id === tempHabit.id);
     if (idx !== -1) habits[idx] = data[0];
-    renderHabits();
+    render();
 }
 
 /**
@@ -83,7 +83,7 @@ async function toggleHabit(id, completed) {
     // Update locally first
     const habit = habits.find(h => h.id === id);
     if (habit) habit.completed = completed;
-    renderHabits();
+    render();
 
     const { error } = await supabaseClient
         .from('habits')
@@ -102,7 +102,7 @@ async function toggleHabit(id, completed) {
 async function deleteHabit(id) {
     // Update locally first
     habits = habits.filter(h => h.id !== id);
-    renderHabits();
+    render();
 
     const { error } = await supabaseClient
         .from('habits')
@@ -115,50 +115,36 @@ async function deleteHabit(id) {
 }
 
 /**
- * 6. UI RENDERING
+ * 6. RENDER UI
  */
-function renderHabits() {
-    loadingEl.classList.add('hidden');
+function render() {
+    loadingMsg.classList.add('hidden');
     habitsList.innerHTML = '';
-    
-    if (habits.length === 0) {
-        habitsList.innerHTML = '<div class="loading-msg">No habits yet. Let\'s start!</div>';
-        updateCount();
-        return;
-    }
 
     habits.forEach(habit => {
         const li = document.createElement('li');
         li.className = `habit-item ${habit.completed ? 'completed' : ''}`;
-        
-        li.innerHTML = `
-            <input type="checkbox" class="habit-checkbox" ${habit.completed ? 'checked' : ''}>
-            <span class="habit-text">${habit.text}</span>
-            <button class="delete-btn" title="Delete"></button>
-        `;
 
-        // Checkbox Toggle
-        li.querySelector('.habit-checkbox').onchange = (e) => {
-            toggleHabit(habit.id, e.target.checked);
-        };
+        const chk = document.createElement('input');
+        chk.type = 'checkbox';
+        chk.className = 'habit-checkbox';
+        chk.checked = habit.completed;
+        chk.onchange = () => toggleHabit(habit.id, chk.checked);
 
-        // Delete Button
-        li.querySelector('.delete-btn').onclick = () => {
-            deleteHabit(habit.id);
-        };
+        const span = document.createElement('span');
+        span.className = 'habit-text';
+        span.textContent = habit.text;
 
+        const del = document.createElement('button');
+        del.className = 'delete-btn';
+        del.innerHTML = '✕';
+        del.onclick = () => deleteHabit(habit.id);
+
+        li.appendChild(chk);
+        li.appendChild(span);
+        li.appendChild(del);
         habitsList.appendChild(li);
     });
-
-    updateCount();
-}
-
-function updateCount() {
-    const countEl = document.getElementById('habits-count');
-    if (!countEl) return;
-    
-    const remaining = habits.filter(h => !h.completed).length;
-    countEl.textContent = `${remaining} remaining`;
 }
 
 /**

@@ -1,13 +1,28 @@
 :root {
-    --bg-color: #0C0C0E;
-    --card-bg: #1C1C1E;
-    --accent-blue: #0A84FF;
-    --text-primary: #FFFFFF;
-    --text-secondary: #8E8E93;
-    --text-completed: #48484A;
-    --system-red: #FF453A;
-    --card-border: rgba(255, 255, 255, 0.08);
-    --safe-padding: 20px;
+    /* iOS 18 Semantic Colors */
+    --system-blue: #007AFF;
+    --system-green: #34C759;
+    --system-red: #FF3B30;
+    --system-gray: #8E8E93;
+    --system-background: #F2F2F7;
+    --secondary-background: #FFFFFF;
+    --label-primary: #000000;
+    --label-secondary: #8E8E93;
+    --separator: rgba(60, 60, 67, 0.12);
+    
+    /* Spacing & Geometry */
+    --margin-horizontal: 20px;
+    --border-radius: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --system-background: #000000;
+        --secondary-background: #1C1C1E;
+        --label-primary: #FFFFFF;
+        --label-secondary: #8E8E93;
+        --separator: rgba(255, 255, 255, 0.15);
+    }
 }
 
 * {
@@ -18,209 +33,221 @@
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-primary);
+    /* SF Pro Font Stack with Display/Text switching logic handled via size */
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    background-color: var(--system-background);
+    color: var(--label-primary);
+    line-height: 1.25;
     -webkit-font-smoothing: antialiased;
     display: flex;
     justify-content: center;
-    min-height: 100vh;
 }
 
 .container {
     width: 100%;
-    max-width: 500px;
-    padding: 40px var(--safe-padding);
-    animation: fadeIn 0.6s ease-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    max-width: 540px;
+    padding: 0 var(--margin-horizontal);
 }
 
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    margin-top: 40px;
     margin-bottom: 30px;
-    padding-left: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 h1 {
+    /* SF Pro Display (>20pt) */
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
     font-size: 34px;
     font-weight: 700;
-    letter-spacing: -0.5px;
-    margin-bottom: 4px;
-}
-
-.subtitle {
-    font-size: 15px;
-    color: var(--text-secondary);
-    font-weight: 400;
+    color: var(--system-blue);
+    letter-spacing: -1.2px;
 }
 
 .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: #3A3A3C;
-    margin-top: 14px;
-    transition: all 0.4s ease;
+    background-color: #C7C7CC;
+    transition: all 0.5s cubic-bezier(0.1, 0.7, 1, 0.1);
 }
 
 .status-dot.active {
-    background-color: #34C759;
-    box-shadow: 0 0 8px rgba(52, 199, 89, 0.5);
+    background-color: var(--system-green);
+    box-shadow: 0 0 8px var(--system-green);
 }
 
-/* Premium Input Bar */
+/* iOS 18 Inline "Add" Field */
 #habit-form {
     display: flex;
     align-items: center;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 16px;
-    padding: 8px 12px 8px 18px;
-    margin-bottom: 30px;
-    transition: transform 0.2s;
+    background: var(--secondary-background);
+    border-radius: var(--border-radius);
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+.plus-circle {
+    width: 22px;
+    height: 22px;
+    background: var(--system-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
 }
 
 input {
     flex: 1;
-    background: transparent;
     border: none;
+    background: transparent;
     outline: none;
-    color: var(--text-primary);
-    font-size: 16px;
-    font-weight: 400;
-    padding: 10px 0;
+    font-family: "SF Pro Text", sans-serif;
+    font-size: 17px;
+    color: var(--label-primary);
+    padding: 2px 0;
 }
 
 input::placeholder {
-    color: var(--text-secondary);
-    font-style: italic;
-    opacity: 0.7;
+    color: var(--label-secondary);
+    opacity: 0.6;
 }
 
 button#add-btn {
-    background: var(--accent-blue);
-    color: white;
+    background: none;
     border: none;
-    padding: 8px 18px;
-    border-radius: 12px;
-    font-size: 15px;
+    color: var(--system-blue);
     font-weight: 600;
+    font-size: 17px;
     cursor: pointer;
-    transition: all 0.2s;
+    padding: 4px;
+    transition: opacity 0.2s;
 }
 
 button#add-btn:active {
-    opacity: 0.7;
-    transform: scale(0.95);
+    opacity: 0.4;
 }
 
-/* Habit List & Cards */
+/* Grouped Inset List */
 .list-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    background: var(--secondary-background);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 
 ul {
     list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 }
 
 .habit-item {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 16px;
-    padding: 18px;
     display: flex;
     align-items: center;
-    gap: 16px;
-    animation: slideIn 0.3s ease-out;
-    transition: transform 0.1s;
+    padding: 13px 16px;
+    gap: 14px;
+    position: relative;
+    transition: background 0.1s;
 }
 
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(10px); }
-    to { opacity: 1; transform: translateX(0); }
+.habit-item:active {
+    background: rgba(0, 0, 0, 0.05);
 }
 
-/* Premium Checkbox */
+/* Precision Hairline Separator */
+.habit-item::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 54px; /* Perfectly aligned with text start */
+    height: 0.5px;
+    background-color: var(--separator);
+}
+
+.habit-item:last-child::after {
+    display: none;
+}
+
+/* iOS 18 Checkbox (24px Circle) */
 .habit-checkbox {
     width: 24px;
     height: 24px;
     appearance: none;
-    border: 2px solid #3A3A3C;
+    border: 2px solid #C7C7CC;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     flex-shrink: 0;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .habit-checkbox:checked {
-    background-color: var(--accent-blue);
-    border-color: var(--accent-blue);
-    transform: scale(1.1);
+    background-color: var(--system-blue);
+    border-color: var(--system-blue);
+    transform: scale(1.05); /* Bounce-like effect */
 }
 
+/* Refined SF Symbol-Style Checkmark */
 .habit-checkbox:checked::after {
     content: "";
-    width: 9px;
+    width: 10px;
     height: 5px;
     border-left: 2px solid white;
     border-bottom: 2px solid white;
-    transform: rotate(-45deg) translateY(-1px);
+    transform: rotate(-45deg) translateY(-1px) translateX(0.5px);
     display: block;
 }
 
 .habit-text {
     flex: 1;
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--text-primary);
-    transition: color 0.3s;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: -0.2px;
 }
 
 .completed .habit-text {
-    color: var(--text-completed);
+    color: var(--system-gray);
     text-decoration: line-through;
+    opacity: 0.7;
 }
 
-/* Subtle Delete X */
+/* Clean Delete Control */
 .delete-btn {
+    color: #C7C7CC;
     background: none;
     border: none;
-    color: #3A3A3C;
-    font-size: 18px;
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
     cursor: pointer;
-    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     transition: all 0.2s;
-    line-height: 1;
 }
 
-.delete-btn::before {
-    content: "✕";
-}
-
-.delete-btn:hover {
+.delete-btn:active {
+    background: rgba(255, 59, 48, 0.1);
     color: var(--system-red);
 }
 
 .loading-msg {
     text-align: center;
     padding: 40px;
-    color: var(--text-secondary);
-    font-size: 15px;
+    color: var(--system-gray);
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .hidden {
